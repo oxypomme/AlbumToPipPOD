@@ -45,7 +45,11 @@ namespace AlbumToPipPOD
                         if (type == "*.mp3")
                             ConvertMp3ToWav(files[i], Path.Combine(outputFolder, $"{i + 1}.wav"));
                         else if (type == "*.wav")
-                            File.Copy(files[i], Path.Combine(outputFolder, $"{i + 1}.wav"));
+                        {
+                            using (var sourceStream = new FileStream(files[i], FileMode.Open, FileAccess.Read))
+                            using (var destinationStream = new FileStream(Path.Combine(outputFolder, $"{i + 1}.wav"), FileMode.Create, FileAccess.Write))
+                                sourceStream.CopyTo(destinationStream);
+                        }
                         else
                             throw new NotSupportedException();
                         if (i + 1 == 30)
